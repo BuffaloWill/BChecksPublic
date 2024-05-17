@@ -1,0 +1,98 @@
+metadata:
+    language: v2-beta
+    name: "Conditional variable name check"
+    description: "Looks for variable names in js"
+    author: "BuffaloWill"
+    tags: "exposure", "token", "passive", "bce", "conditional"
+
+define:
+    check_request  = "False"                    # Checks everything in the request  (high noise due to headers)
+    check_response = "False"                    # Checks everything in the response (high noise due to headers)
+    check_response_body   = "False"             # Checks only the response body
+    check_response_body_js     = "True"         # Checks the response body when the response type is Javascript
+    greedy_search = "True"                      # Greedily searches for the string anywhere; not declared as a java variable
+
+given response then
+    if {check_request} matches "True" then
+        if {latest.request} matches "(var|let|const)\s(?i:secret\:|password\:|apikey\:|clienttoken\:|token=)" then
+            report issue and continue:
+                name: "Sensitive Variable Name JS - Anywhere in Request"
+                severity: info
+                confidence: tentative
+                detail: "Sensitive Variable Name JS"
+                remediation: "Situational awareness for the variable name."
+        end if
+        if {greedy_search} matches "True" then
+            if {latest.request} matches "(?i:secret\:\"|password\:\"|apikey\:\"|clienttoken\:\"|token=):\"" then
+                report issue and continue:
+                    name: "Sensitive Variable Name JS - Anywhere in Request"
+                    severity: info
+                    confidence: tentative
+                    detail: "Potential Sensitive Variable Name"
+                    remediation: "Situational awareness for the variable name."
+            end if
+        end if
+    end if
+    if {check_response} matches "True" then
+        if {latest.request} matches "(var|let|const)\s(?i:secret\:|password\:|apikey\:|clienttoken\:|token=)" then
+            report issue and continue:
+                name: "Sensitive Variable Name JS - Anywhere in Response"
+                severity: info
+                confidence: tentative
+                detail: "Potential Sensitive Variable Name"
+                remediation: "Situational awareness for the variable name."
+        end if
+        if {greedy_search} matches "True" then
+            if {latest.response} matches "(?i:secret\:\"|password\:\"|apikey\:\"|clienttoken\:\"|token=)" then
+                report issue and continue:
+                    name: "Sensitive Variable Name JS - Anywhere in Response"
+                    severity: info
+                    confidence: tentative
+                    detail: "Potential Sensitive Variable Name"
+                    remediation: "Situational awareness for the variable name."
+            end if
+        end if
+
+    end if
+    if {check_response_body} matches "True" then
+        if {latest.response.body} matches "(var|let|const)\s(?i:secret\:|password\:|apikey\:|clienttoken\:|token=)" then
+            report issue and continue:
+                name: "Sensitive Variable Name JS - Anywhere in Response Body"
+                severity: info
+                confidence: tentative
+                detail: "Potential Sensitive Variable Name"
+                remediation: "Situational awareness for the variable name."
+        end if
+        if {greedy_search} matches "True" then
+            if {latest.response.body} matches "(?i:secret\:\"|password\:\"|apikey\:\"|clienttoken\:\"|token=)" then
+                report issue and continue:
+                    name: "Sensitive Variable Name JS - Anywhere in Response Body Greedy"
+                    severity: info
+                    confidence: tentative
+                    detail: "Potential Sensitive Variable Name"
+                    remediation: "Situational awareness for the variable name."
+            end if
+        end if
+    end if
+    if {check_response_body_js} matches "True" then
+        if {latest.response.headers} matches "application/javascript" or {latest.response.headers} matches "text/javascript"  then
+            if {latest.response.body} matches "(var|let|const)\s(?i:secret\:|password\:|apikey\:|clienttoken\:)" then
+                report issue and continue:
+                    name: "Sensitive Variable Name JS - Anywhere in Response Body JS"
+                    severity: info
+                    confidence: tentative
+                    detail: "Potential Sensitive Variable Name"
+                    remediation: "Situational awareness for the variable name."
+            end if
+            if {greedy_search} matches "True" then
+                if {latest.response.body} matches "(?i:secret\:\"|password\:\"|apikey\:\"|clienttoken\:\")" then
+                    report issue and continue:
+                        name: "Sensitive Variable Name JS - Anywhere in Response Body JS Greedy"
+                        severity: info
+                        confidence: tentative
+                        detail: "Potential Sensitive Variable Name"
+                        remediation: "Situational awareness for the variable name."
+                end if
+            end if
+        end if
+    end if

@@ -1,0 +1,26 @@
+metadata:
+    language: v2-beta
+    name: "Git Ignore Check"
+    description: "Tests for exposed gitignore in current path as opposed to just root directory of site. \n Resource: https://github.com/github/gitignore/tree/main."
+    author: "BuffaloWill"
+    tags: "exposure", "config", "bce", "active"
+
+run for each:
+    potential_path =
+        ".gitignore"
+
+given path then
+    if not({base.request.url.path} is "/") then
+        send request called check:
+            method: "GET"
+            replacing path: `{regex_replace({regex_replace({base.request.url}, "^.*?\/.*?\/.*?\/", "/")}, "([^/]+)$", "")}{potential_path}`
+
+    end if
+
+    if {check.response.body} matches "(.idea\/|.circle_ci|.DS_Store|.Trashes|.TemporaryItems|composer.phar|config.xml|.bundle\/)"
+        report issue:
+            name: `Gitignore {potential_path}.`
+            severity: low
+            confidence: tentative
+			detail: `Gitignore {potential_path}.`
+	end if

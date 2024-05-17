@@ -1,0 +1,25 @@
+metadata:
+ language: v2-beta
+ name: "Chat Support Widget Detection (intercom, zendesk, etc)"
+ description: "Tries to detect chat widgets on the page"
+ author: "BuffaloWill"
+ tags: "passive", "bce"
+
+given host then
+    if {latest.response.body} matches "intercom\.com" then
+        report issue and continue:
+            name: "Intercom chat widget detected"
+	        severity: low
+	        confidence: tentative
+	        detail: "Reference: https://dday.us/2021/11/03/h1vendorATO.html"
+	        remediation: ""
+    end if
+
+    if {latest.response.body} matches "Zendesk Widget script" then
+        report issue and continue:
+	        name: "Zendesk Widget Script detected"
+	        severity: low
+	        confidence: tentative
+	        detail: "Reference: https://www.sprocketsecurity.com/resources/introduction-to-the-ticketing-saas-landscape"
+	        remediation: ""
+    end if

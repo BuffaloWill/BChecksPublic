@@ -1,0 +1,56 @@
+metadata:
+    language: v2-beta
+    name: "Conditional JWT Check"
+    description: "Looks for JWT with conditional parameters"
+    author: "BuffaloWill"
+    tags: "exposure", "token", "passive", "bce", "conditional"
+
+define:
+    check_request  = "False"                    # Checks everything in the request  (high noise due to headers)
+    check_response = "False"                    # Checks everything in the response (high noise due to headers)
+    check_response_body   = "True"              # Checks only the response body
+    check_response_body_js     = "False"         # Checks the response body when the response type is Javascript
+
+given response then
+    if {check_request} matches "True" then
+        if {latest.request} matches "eyJ[a-zA-Z0-9]{10,}\.eyJ" then
+            report issue and continue:
+                name: "Conditional JWT Check - Anywhere in Request"
+                severity: info
+                confidence: tentative
+                detail: "Potential JWT identified"
+                remediation: "Situational awareness for the JWT and it's application."
+        end if
+    end if
+    if {check_response} matches "True" then
+        if {latest.response} matches "eyJ[a-zA-Z0-9]{10,}\.eyJ" then
+            report issue and continue:
+                name: "Conditional JWT Check - Anywhere in Response"
+                severity: info
+                confidence: tentative
+                detail: "Potential JWT identified"
+                remediation: "Situational awareness for the JWT and it's application."
+        end if
+    end if 
+    if {check_response_body} matches "True" then
+        if {latest.response.body} matches "eyJ[a-zA-Z0-9]{10,}\.eyJ" then
+            report issue and continue:
+                name: "Conditional JWT Check - Anywhere in Response Body"
+                severity: info
+                confidence: tentative
+                detail: "Potential JWT identified"
+                remediation: "Situational awareness for the JWT and it's application."
+        end if
+    end if
+    if {check_response_body_js} matches "True" then
+        if {latest.response.headers} matches "application/javascript" or {latest.response.headers} matches "text/javascript"  then
+            if {base.response.body} matches "eyJ[a-zA-Z0-9]{10,}\.eyJ" then
+                report issue and continue:
+                    name: "Conditional JWT Check - In Javascript"
+                    severity: info
+                    confidence: tentative
+                    detail: "Potential JWT identified"
+                    remediation: "Situational awareness for the JWT and it's application."
+            end if
+    end if
+end if

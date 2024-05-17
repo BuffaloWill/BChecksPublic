@@ -1,0 +1,112 @@
+metadata:
+ language: v2-beta
+ name: "DOM XSS Sink - High Noise"
+ description: "Detects xss sinks"
+ author: "BuffaloWill"
+ tags: "xss", "passive", "javascript", "bce"
+
+given response then
+
+if {latest.response} matches "jQuery(\.globalEval|\.\$|\.constructor|\.parseHTML|\.has|\.init|\.index|\.add|\.append|\.appendTo|\.after|\.insertAfter|\.before|\.insertBefore|\.html|\.prepend|\.prependTo|\.replaceWith|\.replaceAll|\.wrap|\.wrapALL|\.wrapInner|\.prop\.innerHTML|\.prop\.outerHTML|\.attr\.onclick|\.attr\.onmouseover|\.attr.onmousedown|\.attr\.onmouseup|\.attr\.onkeydown|\.attr\.onkeypress|\.attr\.onkeyup|\.attr\.href|\.attr\.src|\.attr\.data|\.attr\.action|\.attr\.formaction|\.prop\.href|\.prop\.src|\.prop\.data|\.prop\.action|\.prop\.formaction)" then
+    report issue and continue:
+      severity: low
+      confidence: tentative
+      detail: "potential dom xss sink"
+      remediation: "ensure sanitization before usage in DOM"
+end if
+
+if {latest.response} matches "fetch\(\.body)?" then
+    report issue and continue:
+      severity: low
+      confidence: tentative
+      detail: "potential fetch misuse"
+      remediation: "verify input is sanitized"
+end if
+
+if {latest.response} matches "history(\.pushState|\.replaceState)" then
+    report issue and continue:
+      severity: low
+      confidence: tentative
+      detail: "potential history manipulation"
+      remediation: "ensure parameters are sanitized"
+end if
+
+if {latest.response} matches "(session|local)Storage(\.setItem(\.name|\.value))" then
+    report issue and continue:
+      severity: low
+      confidence: tentative
+      detail: "potential storage misuse"
+      remediation: "ensure stored data is sanitized"
+end if
+
+if {latest.response} matches "anchor(\.href|\.target)" then
+    report issue and continue:
+      severity: low
+      confidence: tentative
+      detail: "potential anchor misuse"
+      remediation: "verify URL and target are safe"
+end if
+
+if {latest.response} matches "button(\.formaction|\.value)" then
+    report issue and continue:
+      severity: low
+      confidence: tentative
+      detail: "potential button misuse"
+      remediation: "verify form action and value are safe"
+end if
+
+if {latest.response} matches "set(Timeout|Interval|Immediate)" then
+    report issue and continue:
+      severity: low
+      confidence: tentative
+      detail: "potential timing function misuse"
+      remediation: "ensure callback function is not harmful"
+end if
+
+if {latest.response} matches "script(\.src|\.textContent|\.innerText|\.innerHTML|\.appendChild|\.append)" then
+    report issue and continue:
+      severity: low
+      confidence: tentative
+      detail: "potential script tag misuse"
+      remediation: "ensure script content is safe"
+end if
+
+if {latest.response} matches "document(\.write|\.writeln|\.implementation\.createHTMLDocument|\.domain|\.cookie|\.evaluate)" then
+    report issue and continue:
+      severity: low
+      confidence: tentative
+      detail: "potential document misuse"
+      remediation: "verify document operations are safe"
+end if
+
+if {latest.response} matches "element(\.outerText|\.innerText|\.textContent|\.style\.cssText|\.innerHTML|\.outerHTML|\.insertAdjacentHTML|\.setAttribute(\.onclick|\.onmouseover|\.onmousedown|\.onmouseup|\.onkeydown|\.onkeypress|\.onkeyup|\.href|\.src|\.data|\.action|\.formaction))" then
+    report issue and continue:
+      severity: low
+      confidence: tentative
+      detail: "potential element misuse"
+      remediation: "ensure dynamic element manipulation is safe"
+end if
+
+if {latest.response} matches "location(\.href|\.replace|\.assign|\.pathname|\.protocol|\.host|\.hostname|\.hash|\.search)?" then
+    report issue and continue:
+      severity: low
+      confidence: tentative
+      detail: "potential location manipulation"
+      remediation: "verify location changes are intended"
+end if
+
+if {latest.response} matches "iframe(\.srcdoc|\.src)" then
+    report issue and continue:
+      severity: low
+      confidence: tentative
+      detail: "potential iframe misuse"
+      remediation: "ensure iframe sources are secure"
+end if
+
+if {latest.response} matches "xhr(\.open|\.send|\.setRequestHeader(\.name|\.value)?)" then
+    report issue and continue:
+      severity: low
+      confidence: tentative
+      detail: "potential XHR misuse"
+      remediation: "verify request integrity and security"
+end if

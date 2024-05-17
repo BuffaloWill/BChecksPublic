@@ -1,0 +1,38 @@
+metadata:
+    language: v2-beta
+    name: "Insert Collaboarator header Randomly"
+    description: "Inserts collab payloads in headers 23% of the time"
+    author: "BuffaloWill"
+    tags: "ssrf", "active", "bce"
+
+define:
+    z="{random_str(1)}"
+    collaborator_address = {generate_collaborator_address()}
+
+given request then    
+    if {z} matches "[a-f]" then
+        send request called check:
+            appending headers:
+                "X-Forwarded-Proto": `{collaborator_address}`,
+                "Referer": `{collaborator_address}`,
+                "X-Forwarded-For": `{collaborator_address}`,
+                "True-Client-IP": `{collaborator_address}`,
+                "X-Client-IP": `{collaborator_address}`,
+                "X-Real-IP": `{collaborator_address}`
+    
+    if dns interactions then
+        report issue:
+            severity: info
+            confidence: certain
+            detail: "Received interaction from the header indicated"
+    end if
+
+    if http interactions then
+        report issue:
+        severity: high
+        confidence: certain
+        detail: "Received interaction from the header indicated"
+    end if
+end if
+
+

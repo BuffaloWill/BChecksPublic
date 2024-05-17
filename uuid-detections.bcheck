@@ -1,0 +1,156 @@
+metadata:
+    language: v2-beta
+    name: "Conditional UUID"
+    description: "Looks for UUID with conditional parameters"
+    author: "vavkamil","BuffaloWill (modified)"
+    tags: "exposure", "token", "passive", "bce", "conditional"
+
+define:
+    check_request  = "False"                    # Checks everything in the request  (high noise due to headers)
+    check_response = "False"                    # Checks everything in the response (high noise due to headers)
+    check_response_body   = "True"              # Checks only the response body
+    check_response_body_js     = "False"         # Checks the response body when the response type is Javascript
+
+given response then
+    if {check_request} matches "True" then
+        # v1
+        if {latest.request} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue and continue:
+                name: "UUID 1 Matched - Anywhere in Request"
+                severity: medium
+                confidence: firm
+                detail: "UUID 1 Matched"
+                remediation: "Review the value."
+        # v3
+        else if {latest.request} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[3][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue and continue:
+                name: "UUID 3 Matched - Anywhere in Request"
+                severity: info
+                confidence: firm
+                detail: "UUID 3 Matched"
+                remediation: "Review the value."
+        # v4
+        else if {latest.request} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[4][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue and continue:
+                name: "UUID 4 Matched - Anywhere in Request"
+                severity: info
+                confidence: firm
+                detail: "UUID 4 Matched"
+                remediation: "Review the value."
+        # v5
+        else if {latest.request} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue and continue:
+                name: "UUID 5 Matched - Anywhere in Request"
+                severity: info
+                confidence: firm
+                detail: "UUID 5 Matched"
+                remediation: "Review the value."
+        end if
+    end if
+    if {check_response} matches "True" then
+        # v1
+        if {latest.response} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue and continue:
+                name: "UUID 1 Matched - Anywhere in Response"
+                severity: medium
+                confidence: firm
+                detail: "UUID 1 Matched"
+                remediation: "Review the value."
+        # v3
+        else if {latest.response} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[3][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue and continue:
+                name: "UUID 3 Matched - Anywhere in Response"
+                severity: info
+                confidence: firm
+                detail: "UUID 3 Matched"
+                remediation: "Review the value."
+        # v4
+        else if {latest.response} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[4][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue and continue:
+                name: "UUID 4 Matched - Anywhere in Response"
+                severity: info
+                confidence: firm
+                detail: "UUID 4 Matched"
+                remediation: "Review the value."
+        # v5
+        else if {latest.response} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue and continue:
+                name: "UUID 5 Matched - Anywhere in Response"
+                severity: info
+                confidence: firm
+                detail: "UUID 5 Matched"
+                remediation: "Review the value."
+        end if
+    end if
+    if {check_response_body} matches "True" then
+        # v1
+        if {latest.response.body} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue and continue:
+                name: "UUID 1 Matched - Response Body"
+                severity: medium
+                confidence: firm
+                detail: "UUID 1 Matched"
+                remediation: "Review the value."
+        # v3
+        else if {latest.response.body} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[3][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue and continue:
+                name: "UUID 3 Matched - Response Body"
+                severity: info
+                confidence: firm
+                detail: "UUID 3 Matched"
+                remediation: "Review the value."
+        # v4
+        else if {latest.response.body} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[4][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue and continue:
+                name: "UUID 4 Matched - Response Body"
+                severity: info
+                confidence: firm
+                detail: "UUID 4 Matched"
+                remediation: "Review the value."
+        # v5
+        else if {latest.response.body} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+            report issue and continue:
+                name: "UUID 5 Matched - Response Body"
+                severity: info
+                confidence: firm
+                detail: "UUID 5 Matched"
+                remediation: "Review the value."
+        end if
+    end if
+    if {check_response_body_js} matches "True" then
+        if {latest.response.headers} matches "application/javascript" or {latest.response.headers} matches "text/javascript"  then   
+            # v1
+            if {latest.response.body} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+                report issue and continue:
+                    name: "UUID 1 Matched - Javascript"
+                    severity: medium
+                    confidence: firm
+                    detail: "UUID 1 Matched"
+                    remediation: "Review the value."
+            # v3
+            else if {latest.response.body} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[3][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+                report issue and continue:
+                    name: "UUID 3 Matched - Javascript"
+                    severity: info
+                    confidence: firm
+                    detail: "UUID 3 Matched"
+                    remediation: "Review the value."
+            # v4
+            else if {latest.response.body} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[4][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+                report issue and continue:
+                    name: "UUID 4 Matched - Javascript"
+                    severity: info
+                    confidence: firm
+                    detail: "UUID 4 Matched"
+                    remediation: "Review the value."
+            # v5
+            else if {latest.response.body} matches "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}" then
+                report issue and continue:
+                    name: "UUID 5 Matched - Javascript"
+                    severity: info
+                    confidence: firm
+                    detail: "UUID 5 Matched"
+                    remediation: "Review the value."
+            end if
+        end if
+    end if

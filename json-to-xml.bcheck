@@ -1,0 +1,19 @@
+metadata:
+    language: v2-beta
+    name: "JSON to XML Request"
+    description: "For backwards compatibility some REST endpoints will support XML as well as JSON. Test for it."
+    author: "BuffaloWill"
+    tags: "active", "bce", "api"
+
+given path then
+    if {latest.request} matches "Content-Type: application/json" then
+        send request called check:
+            replacing headers: "Content-Type": "application/xml"
+            replacing body: "<?xml version=\"1.0\" encoding=\"UTF-8\"?><body>&dne;</body>"
+        if "entity" in {check.response} then
+              report issue:
+                name: "JSON to XML Request - Potential XML Endpoint"
+                severity: low
+                confidence: tentative
+            end if
+    end if

@@ -1,0 +1,47 @@
+metadata:
+ language: v2-beta
+ name: "DOM XSS Sinks"
+ description: "Detects xss sinks"
+ author: "BuffaloWill"
+ tags: "xss", "passive", "javascript", "bce"
+
+given response then
+    if {latest.response.body} matches "\++ ?location.(href|hash|search|pathname)" then
+        report issue and continue:
+        severity: low
+        confidence: tentative
+        detail: "potential location misuse"
+        remediation: "verify input is sanitized"
+    end if
+
+    if {latest.response.body} matches "\++ ?document.URL" then
+        report issue and continue:
+        severity: low
+        confidence: tentative
+        detail: "potential document.url misuse"
+        remediation: "verify input is sanitized"
+    end if
+
+    if {latest.response.body} matches "\++ ?window.name" then
+        report issue and continue:
+        severity: low
+        confidence: tentative
+        detail: "potential window.name misuse"
+        remediation: "verify input is sanitized"
+    end if
+
+    if {latest.response.body} matches "\++ ?document.(referrer|documentURI|baseURI|cookie)" then
+        report issue and continue:
+        severity: low
+        confidence: tentative
+        detail: "potential document misuse"
+        remediation: "verify input is sanitized"
+    end if
+
+    if {latest.response.body} matches "\.(insertAdjacentHTML|innerHTML|setHTMLUnsafe|parseHTMLUnsafe)\(" then
+        report issue and continue:
+        severity: medium
+        confidence: tentative
+        detail: "Found dangerous HTML output method usage"
+        remediation: "verify input is sanitized"
+    end if

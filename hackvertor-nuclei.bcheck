@@ -1,0 +1,21 @@
+metadata:
+    language: v2-beta
+    name: "Nuclei "
+    description: "PoC for calling Nuclei from BurpSuite via Hackvertor custom tag. Replace the nonce and make sure the custom tag is created."
+    author: "BuffaloWill"
+    tags: "active", "bce", "nuclei"
+
+given path then
+        send request called check:
+           appending headers: "X-Nuclei-Check":`<@_nucleipanel('{base64_encode(latest.request.headers)}','-tags panel','8ae6ef6d83ab6a0b3efef0f42acdfd84')>{latest.request.url}<@/_nucleipanel>`
+        if "X-Nuclei-Check: sid_" in {check.request} then
+	        report issue:
+               name: `Launched Nuclei Scan: panel {latest.request.url}`
+	            severity: low
+	            confidence: tentative
+	            detail: "Nuclei Scan - Panels"
+	            remediation: "Nuclei Scan - Panels"
+
+        end if
+
+

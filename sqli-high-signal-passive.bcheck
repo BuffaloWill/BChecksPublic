@@ -1,0 +1,15 @@
+metadata:
+ language: v2-beta
+ name: "SQLi High Signal Passive Checks"
+ description: "Detects the simplest SQLi opportunities - passive"
+ author: "github.com/BuffaloWill"
+ tags: "sqli", "passive"
+
+given response then
+    if {latest.request} matches "order by desc" or {latest.request} matches "order by asc" then
+        report issue and continue:
+        severity: low
+        confidence: tentative
+        detail: "review input params for sqli"
+        remediation: "review input params for sqli"
+    end if

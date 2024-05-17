@@ -6,11 +6,10 @@ metadata:
  tags: "dos", "passive", "bce"
 
 given response then
-
-if {latest.response.headers} matches "([Xx](-|_)|)[Ss]erver:[^\n]+" and {latest.response.headers} matches "Apache" and {latest.response.headers} matches "2.4.[1-5][1-8]" then
-        report issue and continue:
-        severity: medium
-        confidence: tentative
-        detail: "Server responded with vulnerable Apache server version to HTTP/2 CONTINUATION Flood - CVE-2024-27316. Verify that HTTP/2 is enabled on the server before reporting."
-        remediation: "Verify that HTTP/2 is enabled on the server before reporting. If so, update Apache."
-end if
+    if {latest.response.headers} matches "([Xx](-|_)|)[Ss]erver:[^\n]+" and {latest.response.headers} matches "Apache" and {latest.response.headers} matches "2.4.[1-5][1-8]" then
+            report issue and continue:
+            severity: medium
+            confidence: tentative
+            detail: "Server responded with vulnerable Apache server version to HTTP/2 CONTINUATION Flood - CVE-2024-27316. Verify that HTTP/2 is enabled on the server before reporting."
+            remediation: "Verify that HTTP/2 is enabled on the server before reporting. If so, update Apache."
+    end if

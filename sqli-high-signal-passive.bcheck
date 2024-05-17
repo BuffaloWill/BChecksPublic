@@ -2,7 +2,7 @@ metadata:
  language: v2-beta
  name: "SQLi High Signal Passive Checks"
  description: "Detects the simplest SQLi opportunities - passive"
- author: "github.com/BuffaloWill"
+ author: "BuffaloWill"
  tags: "sqli", "passive"
 
 given response then
